@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HostMatrix - Universal Free Hosting Finder</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                            dark: '#0b0f19',
+                            card: '#111827',
+                            border: '#1f2937'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(31, 41, 55, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-900">
+
+    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-4">
+                
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="switchView('explore')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/20">
+                        <i class="fa-solid fa-server"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">HostMatrix</span>
+                        <span class="hidden sm:inline-block text-[10px] px-2 py-0.5 ml-2 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold tracking-wider uppercase">Universal Cloud Directory</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-1">
+                    <button onclick="switchView('explore')" id="nav-explore" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition text-emerald-400 bg-slate-800 border border-slate-700">
+                        <i class="fa-solid fa-border-all mr-2"></i>Explore Hosts
+                    </button>
+                    <button onclick="switchView('matrix')" id="nav-matrix" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 transition">
+                        <i class="fa-solid fa-table-list mr-2"></i>Comparison Matrix
+                    </button>
+                    <button onclick="switchView('quiz')" id="nav-quiz" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-slate-200 transition">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2 text-amber-400"></i>Host Finder Wizard
+                    </button>
+                </nav>
+
+                <!-- Action Button -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="switchView('quiz')" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center">
+                        <i class="fa-solid fa-bolt mr-1.5"></i> Find My Match
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-slate-800 bg-slate-900 px-4 py-3 space-y-2">
+            <button onclick="switchView('explore'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-emerald-400 bg-slate-800">Explore Hosts</button>
+            <button onclick="switchView('matrix'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Comparison Matrix</button>
+            <button onclick="switchView('quiz'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-amber-400 hover:bg-slate-800">Host Finder Wizard</button>
+        </div>
+    </header>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- VIEW 1: EXPLORE HOSTS -->
+        <section id="view-explore" class="view-content space-y-6">
+            
+            <!-- Hero Header -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-6 sm:p-8 border border-slate-800 shadow-2xl">
+                <div class="relative z-10 max-w-3xl space-y-3">
+                    <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold tracking-wide">
+                        <i class="fa-solid fa-globe mr-1.5"></i> Universal Multi-Language Index
+                    </span>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                        Find Free Cloud Hosting for <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">Any Language</span>
+                    </h1>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        Filter free tier cloud platforms, serverless APIs, container hosting, and static providers across Python, Node.js, Go, Rust, Java, PHP, Ruby, .NET, and Docker.
+                    </p>
+                </div>
+                <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            </div>
+
+            <!-- Filter Controls Bar -->
+            <div class="glass-panel rounded-2xl p-5 space-y-5 shadow-xl">
+                
+                <!-- Search and Sorting -->
+                <div class="flex flex-col md:flex-row gap-4 justify-between">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                        <input type="text" id="search-input" oninput="applyFilters()" placeholder="Search platforms, features, databases, or frameworks (e.g. Render, No Card, PostgreSQL, FastAPI)..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider shrink-0">Sort By:</label>
+                        <select id="sort-select" onchange="applyFilters()" class="bg-slate-950 border border-slate-800 text-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition">
+                            <option value="recommended">Featured / Top Picks</option>
+                            <option value="nocard">No Credit Card Required First</option>
+                            <option value="ram-high">RAM Capacity (Highest)</option>
+                            <option value="name">Name (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Language Pill Filters -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        <span>Language / Stack Category</span>
+                        <button onclick="resetAllFilters()" class="text-emerald-400 hover:underline normal-case text-xs">Reset All Filters</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2" id="lang-pills-container">
+                        <!-- Language Pills populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Secondary Feature Toggles -->
+                <div class="pt-3 border-t border-slate-800 flex flex-wrap gap-4 items-center text-xs text-slate-300">
+                    <label class="flex items-center space-x-2 cursor-pointer bg-slate-900/80 px-3 py-2 rounded-lg border border-slate-800 hover:border-slate-700 transition">
+                        <input type="checkbox" id="toggle-nocard" onchange="applyFilters()" class="accent-emerald-500 rounded">
+                        <span class="font-medium text-emerald-400"><i class="fa-solid fa-credit-card-slash mr-1"></i> No Credit Card Required</span>
+                    </label>
+
+                    <label class="flex items-center space-x-2 cursor-pointer bg-slate-900/80 px-3 py-2 rounded-lg border border-slate-800 hover:border-slate-700 transition">
+                        <input type="checkbox" id="toggle-nosleep" onchange="applyFilters()" class="accent-emerald-500 rounded">
+                        <span class="font-medium"><i class="fa-solid fa-bolt mr-1 text-amber-400"></i> No Cold Start / Always Active</span>
+                    </label>
+
+                    <label class="flex items-center space-x-2 cursor-pointer bg-slate-900/80 px-3 py-2 rounded-lg border border-slate-800 hover:border-slate-700 transition">
+                        <input type="checkbox" id="toggle-database" onchange="applyFilters()" class="accent-emerald-500 rounded">
+                        <span class="font-medium"><i class="fa-solid fa-database mr-1 text-cyan-400"></i> Free Database Included</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Active Filters Counter -->
+            <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+                <span>Showing <strong id="results-count" class="text-white">0</strong> hosting providers</span>
+                <span id="active-tag-indicator" class="text-emerald-400 italic"></span>
+            </div>
+
+            <!-- Hosting Cards Grid -->
+            <div id="hosts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Host cards injected dynamically -->
+            </div>
+        </section>
+
+        <!-- VIEW 2: COMPARISON MATRIX -->
+        <section id="view-matrix" class="view-content hidden space-y-6">
+            <div>
+                <h2 class="text-2xl font-black text-white">Universal Platform Comparison Matrix</h2>
+                <p class="text-slate-400 text-sm">Side-by-side evaluation of free limits, credit card policies, cold starts, and supported runtimes.</p>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-slate-800 shadow-2xl glass-panel">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider border-b border-slate-800 font-bold">
+                        <tr>
+                            <th class="py-4 px-4 sticky left-0 bg-slate-950 z-10">Provider</th>
+                            <th class="py-4 px-4">Credit Card Req.?</th>
+                            <th class="py-4 px-4">Free RAM</th>
+                            <th class="py-4 px-4">Sleep / Inactivity</th>
+                            <th class="py-4 px-4">Free Database</th>
+                            <th class="py-4 px-4">Supported Languages</th>
+                            <th class="py-4 px-4">Docker Support</th>
+                            <th class="py-4 px-4 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matrix-tbody" class="divide-y divide-slate-800/60">
+                        <!-- Matrix rows injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- VIEW 3: HOST FINDER WIZARD / QUIZ -->
+        <section id="view-quiz" class="view-content hidden space-y-6">
+            <div class="max-w-3xl mx-auto glass-panel border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8">
+                
+                <div class="text-center space-y-2">
+                    <div class="inline-flex p-3 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-black text-white">Smart Host Recommendation Wizard</h2>
+                    <p class="text-slate-400 text-sm">Answer 4 quick questions to find the ideal free cloud platform for your exact project stack.</p>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-950 rounded-full h-2 border border-slate-800 overflow-hidden">
+                    <div id="quiz-progress-bar" class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-2 rounded-full transition-all duration-300 w-1/4"></div>
+                </div>
+
+                <!-- Question Step Container -->
+                <div id="quiz-step-container" class="space-y-6">
+                    <!-- Steps injected dynamically -->
+                </div>
+
+                <!-- Quiz Results -->
+                <div id="quiz-results-container" class="hidden space-y-6">
+                    <!-- Results injected dynamically -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="guide-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-panel border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+                <div class="flex items-center space-x-3">
+                    <div id="modal-host-icon" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-xl text-emerald-400">
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <div>
+                        <h3 id="modal-host-title" class="text-lg font-bold text-white">Deployment Guide</h3>
+                        <p id="modal-host-subtitle" class="text-xs text-slate-400">Step-by-step setup instructions</p>
+                    </div>
+                </div>
+                <button onclick="closeGuideModal()" class="text-slate-400 hover:text-white p-2 rounded-lg bg-slate-900 border border-slate-800">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div id="modal-body-content" class="p-6 overflow-y-auto space-y-6 text-sm text-slate-300">
+                <!-- Guide content dynamically loaded -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950/50 flex justify-between items-center">
+                <button onclick="closeGuideModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700">
+                    Close Guide
+                </button>
+                <a id="modal-external-link" href="#" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center">
+                    Visit Official Site <i class="fa-solid fa-arrow-up-right-from-square ml-1.5 text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CATEGORIES = [
+            { id: "all", label: "All Stacks", icon: "fa-solid fa-layer-group" },
+            { id: "Python", label: "Python", icon: "fa-brands fa-python" },
+            { id: "Node.js", label: "Node.js / JS", icon: "fa-brands fa-node-js" },
+            { id: "Go", label: "Go (Golang)", icon: "fa-solid fa-g" },
+            { id: "Rust", label: "Rust", icon: "fa-solid fa-gear" },
+            { id: "Java", label: "Java / Kotlin", icon: "fa-brands fa-java" },
+            { id: "PHP", label: "PHP", icon: "fa-brands fa-php" },
+            { id: "Ruby", label: "Ruby", icon: "fa-solid fa-gem" },
+            { id: ".NET", label: "C# / .NET", icon: "fa-solid fa-code" },
+            { id: "Docker", label: "Docker / Any", icon: "fa-brands fa-docker" },
+            { id: "Static", label: "Static Web", icon: "fa-solid fa-file-code" }
+        ];
+
+        const HOSTS_DATABASE = [
+            {
+                id: "render",
+                name: "Render",
+                logo: "fa-solid fa-cube text-indigo-400",
+                tagline: "Unified cloud platform with Git-native autodeploy for web apps & services.",
+                cardRequired: false,
+                recommended: true,
+                ram: "512 MB",
+                ramValue: 512,
+                sleep: "15 min idle (30s cold start)",
+                coldStartSec: 30,
+                database: "PostgreSQL (90-day free tier)",
+                docker: true,
+                languages: ["Python", "Node.js", "Go", "Rust", "Java", "PHP", "Ruby", ".NET", "Docker", "Static"],
+                frameworks: ["Flask", "Django", "FastAPI", "Express", "Next.js", "Gin", "Actix", "Spring Boot", "Laravel", "Rails"],
+                features: ["Free SSL", "Native Git Integration", "Docker support", "Static Site Hosting"],
+                drawbacks: ["Free services sleep after 15m inactivity"],
+                url: "https://render.com",
+                guide: {
+                    title: "Deploying Any App to Render",
+                    steps: [
+                        { text: "Push your code to GitHub or GitLab." },
+                        { text: "Create a `render.yaml` or set configuration manually in Render Dashboard:", code: "services:\n  - type: web\n    name: my-app\n    env: docker # or node, python, go, etc.\n    plan: free\n    buildCommand: docker build -t app .\n    startCommand: ./app" },
+                        { text: "In Render Dashboard, select **New +** -> **Web Service** and connect your repository." },
+                        { text: "Select **Free Tier** and click **Create Web Service**." }
+                    ]
+                }
+            },
+            {
+                id: "pythonanywhere",
+                name: "PythonAnywhere",
+                logo: "fa-brands fa-python text-amber-400",
+                tagline: "Dedicated Python hosting environment with in-browser bash console and scheduled tasks.",
+                cardRequired: false,
+                recommended: true,
+                ram: "512 MB",
+                ramValue: 512,
+                sleep: "Always Active (Requires 1-click renewal every 3 months)",
+                coldStartSec: 0,
+                database: "MySQL / SQLite included",
+                docker: false,
+                languages: ["Python"],
+                frameworks: ["Flask", "Django", "FastAPI", "Bottle"],
+                features: ["No Credit Card Needed", "Persistent Disk Storage", "In-Browser Bash Terminal"],
+                drawbacks: ["Outbound web requests restricted to whitelist on free plan"],
+                url: "https://www.pythonanywhere.com",
+                guide: {
+                    title: "Deploying Python Apps on PythonAnywhere",
+                    steps: [
+                        { text: "Sign up for a free account (No credit card required)." },
+                        { text: "Open a **Bash Console** and clone your code:", code: "git clone https://github.com/youruser/your-repo.git\ncd your-repo\npython3 -m venv venv\nsource venv/bin/activate\npip install -r requirements.txt" },
+                        { text: "Navigate to **Web** tab -> **Add a new web app** -> Select Framework & WSGI path." },
+                        { text: "Click **Reload App** to go live." }
+                    ]
+                }
+            },
+            {
+                id: "vercel",
+                name: "Vercel",
+                logo: "fa-solid fa-triangle-circle-square text-white",
+                tagline: "Frontend cloud and serverless function deployment for Next.js, Node, Python, and Go.",
+                cardRequired: false,
+                recommended: true,
+                ram: "1024 MB (Serverless)",
+                ramValue: 1024,
+                sleep: "Instant Serverless Execution",
+                coldStartSec: 1,
+                database: "Vercel Postgres / KV integr.",
+                docker: false,
+                languages: ["Node.js", "Python", "Go", "Static"],
+                frameworks: ["Next.js", "Express", "FastAPI", "Flask"],
+                features: ["No Credit Card Required", "Global Edge Network", "Zero Cold Start Delays", "Custom Domains"],
+                drawbacks: ["Serverless execution limits (10-15s timeout per request)"],
+                url: "https://vercel.com",
+                guide: {
+                    title: "Deploying Microservices on Vercel",
+                    steps: [
+                        { text: "Add a `vercel.json` file to your root folder:", code: "{\n  \"rewrites\": [{ \"source\": \"/(.*)\", \"destination\": \"/api/index\" }]\n}" },
+                        { text: "Place your backend code inside `/api/index.js` or `/api/index.py`." },
+                        { text: "Import project into Vercel via GitHub or run `npx vercel` via terminal." }
+                    ]
+                }
+            },
+            {
+                id: "koyeb",
+                name: "Koyeb",
+                logo: "fa-solid fa-cubes-stacked text-teal-400",
+                tagline: "Serverless container platform deploying Docker, Node.js, Python, Go, and Rust direct from Git.",
+                cardRequired: false,
+                recommended: true,
+                ram: "512 MB",
+                ramValue: 512,
+                sleep: "Pauses on inactivity",
+                coldStartSec: 5,
+                database: "External database required",
+                docker: true,
+                languages: ["Python", "Node.js", "Go", "Rust", "Java", "PHP", "Ruby", ".NET", "Docker"],
+                frameworks: ["Express", "FastAPI", "Gin", "Actix", "Spring Boot", "Laravel"],
+                features: ["Native Dockerfile Builder", "Global Edge Network", "Custom Domain Support"],
+                drawbacks: ["Single app service limit on free plan"],
+                url: "https://www.koyeb.com",
+                guide: {
+                    title: "Deploying Docker Containers on Koyeb",
+                    steps: [
+                        { text: "Include a valid `Dockerfile` in your repository root." },
+                        { text: "Log in to Koyeb, click **Create Service** and link your GitHub repo." },
+                        { text: "Set port exposure to your container's internal listening port (e.g., 8080)." },
+                        { text: "Click **Deploy**." }
+                    ]
+                }
+            },
+            {
+                id: "cloudflare-pages",
+                name: "Cloudflare Pages & Workers",
+                logo: "fa-solid fa-cloud text-amber-500",
+                tagline: "Unlimited free static web hosting and fast edge serverless workers (JS/Wasm Go/Rust).",
+                cardRequired: false,
+                recommended: true,
+                ram: "128 MB Edge",
+                ramValue: 128,
+                sleep: "Instant (No Cold Start)",
+                coldStartSec: 0,
+                database: "Cloudflare D1 (SQLite) / KV",
+                docker: false,
+                languages: ["Static", "Node.js", "Go", "Rust"],
+                frameworks: ["React", "Vue", "Svelte", "Astro", "Wasm"],
+                features: ["No Credit Card Needed", "Unlimited Bandwidth", "Free Edge SQLite (D1)", "Custom Domains"],
+                drawbacks: ["Full server frameworks require serverless adaptation"],
+                url: "https://pages.cloudflare.com",
+                guide: {
+                    title: "Hosting Static Web & Workers on Cloudflare",
+                    steps: [
+                        { text: "Connect your GitHub account in Cloudflare Dashboard under **Workers & Pages**." },
+                        { text: "Select repository and set build command (e.g. `npm run build`) and output path (e.g. `dist`)." },
+                        { text: "Deploy for free with unlimited bandwidth." }
+                    ]
+                }
+            },
+            {
+                id: "netlify",
+                name: "Netlify",
+                logo: "fa-solid fa-diamond text-teal-300",
+                tagline: "Essential cloud platform for static web applications, Jamstack, and serverless Node functions.",
+                cardRequired: false,
+                recommended: true,
+                ram: "1024 MB (Functions)",
+                ramValue: 1024,
+                sleep: "Instant Serverless",
+                coldStartSec: 1,
+                database: "Netlify Blobs / Integrations",
+                docker: false,
+                languages: ["Static", "Node.js"],
+                frameworks: ["Next.js", "Nuxt", "Gatsby", "Express (Serverless)"],
+                features: ["No Credit Card Required", "Form Handling & Auth", "Deploy Previews"],
+                drawbacks: ["100 GB/month bandwidth limit on free plan"],
+                url: "https://www.netlify.com",
+                guide: {
+                    title: "Deploying Frontend and Functions on Netlify",
+                    steps: [
+                        { text: "Drag-and-drop your project build folder into Netlify UI, or connect GitHub." },
+                        { text: "Set build command: `npm run build` and publish directory `dist`." },
+                        { text: "Place API serverless functions inside `netlify/functions`." }
+                    ]
+                }
+            },
+            {
+                id: "flyio",
+                name: "Fly.io",
+                logo: "fa-solid fa-paper-plane text-purple-400",
+                tagline: "Deploy apps as micro-VMs close to users worldwide via Docker.",
+                cardRequired: true,
+                recommended: false,
+                ram: "256 MB",
+                ramValue: 256,
+                sleep: "Auto-stop when idle",
+                coldStartSec: 4,
+                database: "Fly Postgres (Micro node)",
+                docker: true,
+                languages: ["Python", "Node.js", "Go", "Rust", "Java", "PHP", "Ruby", ".NET", "Docker"],
+                frameworks: ["Django", "Express", "Gin", "Laravel", "Rails", "Spring Boot", "Blazor"],
+                features: ["Persistent Storage Volume support", "Docker container freedom", "Global regions"],
+                drawbacks: ["Credit card required for account verification", "Low memory on free allowance"],
+                url: "https://fly.io",
+                guide: {
+                    title: "Deploying via Fly.io CLI",
+                    steps: [
+                        { text: "Install `flyctl` CLI tool and authenticate: `fly auth login`." },
+                        { text: "Run `fly launch` in project root directory containing a `Dockerfile`." },
+                        { text: "Deploy using: `fly deploy`." }
+                    ]
+                }
+            },
+            {
+                id: "shuttle",
+                name: "Shuttle.rs",
+                logo: "fa-solid fa-crab text-orange-500",
+                tagline: "Rust-native serverless cloud platform with zero-infra code annotations.",
+                cardRequired: false,
+                recommended: true,
+                ram: "512 MB",
+                ramValue: 512,
+                sleep: "Sleeps on idle",
+                coldStartSec: 3,
+                database: "Shuttle Shared Postgres",
+                docker: false,
+                languages: ["Rust"],
+                frameworks: ["Axum", "Actix-web", "Rocket", "Tower"],
+                features: ["No Credit Card Needed", "Pure Rust Infrastructure as Code", "Auto-provisioned Postgres"],
+                drawbacks: ["Strictly for Rust backend projects"],
+                url: "https://www.shuttle.rs",
+                guide: {
+                    title: "Deploying Rust Backends with Shuttle",
+                    steps: [
+                        { text: "Install Shuttle CLI: `cargo install cargo-shuttle`." },
+                        { text: "Initialize Shuttle app: `cargo shuttle init`." },
+                        { text: "Deploy directly from terminal: `cargo shuttle deploy`." }
+                    ]
+                }
+            },
+            {
+                id: "infinityfree",
+                name: "InfinityFree",
+                logo: "fa-solid fa-infinity text-blue-400",
+                tagline: "Free PHP & MySQL web hosting with cPanel, unlimited storage, and no ads.",
+                cardRequired: false,
+                recommended: true,
+                ram: "Shared Web Server",
+                ramValue: 512,
+                sleep: "Always Active (No Sleep)",
+                coldStartSec: 0,
+                database: "MySQL included (Unlimited DBs)",
+                docker: false,
+                languages: ["PHP", "Static"],
+                frameworks: ["Laravel", "WordPress", "CodeIgniter", "Slim"],
+                features: ["No Credit Card Required", "Free MySQL Databases", "cPanel Access", "No Forced Ads"],
+                drawbacks: ["PHP execution memory limits", "No SSH access"],
+                url: "https://www.infinityfree.com",
+                guide: {
+                    title: "Hosting PHP Apps on InfinityFree",
+                    steps: [
+                        { text: "Create a free account without entering a credit card." },
+                        { text: "Open **Control Panel** and create a MySQL database." },
+                        { text: "Upload your PHP source files via File Manager or FTP to `/htdocs`." }
+                    ]
+                }
+            },
+            {
+                id: "huggingface",
+                name: "Hugging Face Spaces",
+                logo: "fa-solid fa-face-smile text-amber-300",
+                tagline: "Hosting for Streamlit, Gradio, Python, and Docker AI/ML web apps.",
+                cardRequired: false,
+                recommended: true,
+                ram: "16 GB (CPU)",
+                ramValue: 16000,
+                sleep: "48 hour idle timeout",
+                coldStartSec: 10,
+                database: "Persistent disk workspace",
+                docker: true,
+                languages: ["Python", "Docker"],
+                frameworks: ["Streamlit", "Gradio", "FastAPI"],
+                features: ["16GB RAM Free Allowance", "No Credit Card Required", "Git integration"],
+                drawbacks: ["Apps render inside Hugging Face space layout"],
+                url: "https://huggingface.co/spaces",
+                guide: {
+                    title: "Deploying Apps to Hugging Face Spaces",
+                    steps: [
+                        { text: "Create a new **Space** on Hugging Face." },
+                        { text: "Select **Streamlit**, **Gradio**, or **Docker** as SDK." },
+                        { text: "Push code via Git: `git clone`, add `app.py` & `requirements.txt`, then `git push`." }
+                    ]
+                }
+            },
+            {
+                id: "github-pages",
+                name: "GitHub Pages",
+                logo: "fa-brands fa-github text-white",
+                tagline: "Free static web hosting directly from your GitHub repositories.",
+                cardRequired: false,
+                recommended: true,
+                ram: "CDN Static",
+                ramValue: 1024,
+                sleep: "Always Active",
+                coldStartSec: 0,
+                database: "External database required",
+                docker: false,
+                languages: ["Static"],
+                frameworks: ["HTML/CSS/JS", "Jekyll", "React", "Vue", "Astro"],
+                features: ["No Credit Card Needed", "Built into GitHub workflows", "Custom domain support"],
+                drawbacks: ["Static sites only (no server runtime)"],
+                url: "https://pages.github.com",
+                guide: {
+                    title: "Publishing Static Sites with GitHub Pages",
+                    steps: [
+                        { text: "In your GitHub repository, go to **Settings** -> **Pages**." },
+                        { text: "Under **Build and deployment**, set Source to `Deploy from a branch` (e.g. `main` or `gh-pages`)." },
+                        { text: "Save settings to publish instantly." }
+                    ]
+                }
+            },
+            {
+                id: "oracle-cloud",
+                name: "Oracle Cloud Free Tier",
+                logo: "fa-solid fa-database text-red-500",
+                tagline: "Free tier including 24 GB RAM, 4 ARM CPU cores VPS instance.",
+                cardRequired: true,
+                recommended: false,
+                ram: "24 GB RAM",
+                ramValue: 24000,
+                sleep: "Always Active VPS (No Sleep)",
+                coldStartSec: 0,
+                database: "Full root DB install freedom",
+                docker: true,
+                languages: ["Python", "Node.js", "Go", "Rust", "Java", "PHP", "Ruby", ".NET", "Docker"],
+                frameworks: ["Spring Boot", "Django", "Laravel", "Dotnet", "Anything"],
+                features: ["Full Root SSH VPS access", "24GB RAM Allowance", "Persistent Storage"],
+                drawbacks: ["Requires credit card for identity check during registration"],
+                url: "https://www.oracle.com/cloud/free/",
+                guide: {
+                    title: "Setting up Always-Free Oracle Compute VPS",
+                    steps: [
+                        { text: "Register an account (Credit card required for anti-fraud check)." },
+                        { text: "Provision an **Ampere A1 Compute Instance** (Select up to 4 OCPUs & 24GB RAM)." },
+                        { text: "SSH into server, install Docker / Language Runtimes, and run apps." }
+                    ]
+                }
+            }
+        ];
+
+        let selectedLang = "all";
+        let activeFilters = {
+            search: "",
+            noCard: false,
+            noSleep: false,
+            database: false,
+            sort: "recommended"
+        };
+
+        let currentQuizStep = 0;
+        let quizAnswers = {};
+
+        window.onload = function() {
+            renderLanguagePills();
+            applyFilters();
+            renderMatrixTable(HOSTS_DATABASE);
+            initQuizWizard();
+        };
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-emerald-400', 'bg-slate-800', 'border', 'border-slate-700');
+                btn.classList.add('text-slate-400');
+            });
+
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${viewId}`);
+            if (activeNav) {
+                activeNav.classList.add('text-emerald-400', 'bg-slate-800', 'border', 'border-slate-700');
+                activeNav.classList.remove('text-slate-400');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function renderLanguagePills() {
+            const container = document.getElementById('lang-pills-container');
+            container.innerHTML = CATEGORIES.map(cat => `
+                <button onclick="setLanguageCategory('${cat.id}')" id="lang-pill-${cat.id}" class="lang-pill px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center transition ${cat.id === selectedLang ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'}">
+                    <i class="${cat.icon} mr-1.5 text-xs"></i> ${cat.label}
+                </button>
+            `).join('');
+        }
+
+        function setLanguageCategory(langId) {
+            selectedLang = langId;
+            document.querySelectorAll('.lang-pill').forEach(btn => {
+                btn.classList.remove('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+                btn.classList.add('bg-slate-950', 'border-slate-800', 'text-slate-400');
+            });
+            const activePill = document.getElementById(`lang-pill-${langId}`);
+            if (activePill) {
+                activePill.classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+                activePill.classList.remove('bg-slate-950', 'border-slate-800', 'text-slate-400');
+            }
+            applyFilters();
+        }
+
+        function resetAllFilters() {
+            selectedLang = "all";
+            document.getElementById('search-input').value = "";
+            document.getElementById('toggle-nocard').checked = false;
+            document.getElementById('toggle-nosleep').checked = false;
+            document.getElementById('toggle-database').checked = false;
+            document.getElementById('sort-select').value = "recommended";
+            setLanguageCategory("all");
+        }
+
+        function applyFilters() {
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+            const noCardOnly = document.getElementById('toggle-nocard').checked;
+            const noSleepOnly = document.getElementById('toggle-nosleep').checked;
+            const dbOnly = document.getElementById('toggle-database').checked;
+            const sortBy = document.getElementById('sort-select').value;
+
+            let filtered = HOSTS_DATABASE.filter(host => {
+                // Language Match
+                const matchLang = selectedLang === "all" || host.languages.includes(selectedLang);
+
+                // Search Match
+                const matchSearch = searchQuery === "" ||
+                    host.name.toLowerCase().includes(searchQuery) ||
+                    host.tagline.toLowerCase().includes(searchQuery) ||
+                    host.languages.some(l => l.toLowerCase().includes(searchQuery)) ||
+                    host.frameworks.some(f => f.toLowerCase().includes(searchQuery));
+
+                // Feature Checkboxes
+                const matchNoCard = !noCardOnly || !host.cardRequired;
+                const matchNoSleep = !noSleepOnly || host.coldStartSec === 0;
+                const matchDB = !dbOnly || (host.database && !host.database.toLowerCase().includes('external'));
+
+                return matchLang && matchSearch && matchNoCard && matchNoSleep && matchDB;
+            });
+
+            // Sorting
+            if (sortBy === 'nocard') {
+                filtered.sort((a, b) => (a.cardRequired === b.cardRequired ? 0 : a.cardRequired ? 1 : -1));
+            } else if (sortBy === 'ram-high') {
+                filtered.sort((a, b) => b.ramValue - a.ramValue);
+            } else if (sortBy === 'name') {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            } else {
+                // Recommended First
+                filtered.sort((a, b) => (b.recommended ? 1 : 0) - (a.recommended ? 1 : 0));
+            }
+
+            document.getElementById('results-count').innerText = filtered.length;
+            renderCardsGrid(filtered);
+        }
+
+        function renderCardsGrid(hosts) {
+            const grid = document.getElementById('hosts-grid');
+
+            if (hosts.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center glass-panel rounded-2xl border border-slate-800 space-y-3">
+                        <i class="fa-solid fa-filter-circle-xmark text-4xl text-slate-600"></i>
+                        <h3 class="text-lg font-bold text-slate-300">No matching hosts found</h3>
+                        <p class="text-xs text-slate-500">Try unchecking 'No Credit Card Required' or clearing search filters.</p>
+                        <button onclick="resetAllFilters()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition">
+                            Reset All Filters
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = hosts.map(host => `
+                <div class="glass-panel border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-slate-700 transition shadow-xl relative group">
+                    ${host.recommended ? `
+                        <span class="absolute -top-3 right-4 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow">
+                            Top Recommendation
+                        </span>
+                    ` : ''}
+
+                    <div>
+                        <!-- Host Title Header -->
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-11 h-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl shrink-0">
+                                <i class="${host.logo}"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    ${host.name}
+                                </h3>
+                                <!-- Credit Card Status Badge -->
+                                ${!host.cardRequired ? `
+                                    <span class="inline-flex items-center text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                        <i class="fa-solid fa-shield-check mr-1"></i> No Card Required
+                                    </span>
+                                ` : `
+                                    <span class="inline-flex items-center text-[10px] text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                                        <i class="fa-solid fa-credit-card mr-1"></i> Card Req. for Setup
+                                    </span>
+                                `}
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">${host.tagline}</p>
+
+                        <!-- Specifications Grid -->
+                        <div class="grid grid-cols-2 gap-2 mb-4 text-[11px]">
+                            <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800">
+                                <span class="text-slate-500 block text-[9px] uppercase font-bold">Memory</span>
+                                <span class="font-semibold text-slate-200">${host.ram}</span>
+                            </div>
+                            <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800">
+                                <span class="text-slate-500 block text-[9px] uppercase font-bold">Inactivity / Cold Start</span>
+                                <span class="font-semibold text-slate-200">${host.coldStartSec === 0 ? 'No Cold Start' : host.coldStartSec + 's wakeup'}</span>
+                            </div>
+                        </div>
+
+                        <!-- Languages Badge List -->
+                        <div class="mb-4 space-y-1">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Supported Languages:</span>
+                            <div class="flex flex-wrap gap-1">
+                                ${host.languages.map(l => `<span class="bg-slate-900 text-slate-300 text-[10px] px-2 py-0.5 rounded border border-slate-800">${l}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Key Features Highlights -->
+                        <ul class="text-xs space-y-1.5 text-slate-300 mb-6">
+                            ${host.features.map(f => `
+                                <li class="flex items-center">
+                                    <i class="fa-solid fa-check text-emerald-400 mr-2 text-[10px]"></i> ${f}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <!-- Bottom CTA Buttons -->
+                    <div class="pt-4 border-t border-slate-800 flex items-center gap-2">
+                        <button onclick="openGuideModal('${host.id}')" class="flex-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700 transition flex items-center justify-center">
+                            <i class="fa-solid fa-book-open mr-1.5 text-emerald-400"></i> Setup Guide
+                        </button>
+                        <a href="${host.url}" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center">
+                            Visit <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMatrixTable(hosts) {
+            const tbody = document.getElementById('matrix-tbody');
+            tbody.innerHTML = hosts.map(host => `
+                <tr class="hover:bg-slate-800/40 transition">
+                    <td class="py-3 px-4 font-bold text-white sticky left-0 bg-slate-950 flex items-center space-x-2 border-r border-slate-800">
+                        <i class="${host.logo}"></i>
+                        <span>${host.name}</span>
+                    </td>
+                    <td class="py-3 px-4">
+                        ${!host.cardRequired ? '<span class="text-emerald-400 font-bold"><i class="fa-solid fa-check mr-1"></i> No Card</span>' : '<span class="text-amber-400"><i class="fa-solid fa-credit-card mr-1"></i> Required</span>'}
+                    </td>
+                    <td class="py-3 px-4 font-mono text-emerald-300">${host.ram}</td>
+                    <td class="py-3 px-4 text-xs">${host.sleep}</td>
+                    <td class="py-3 px-4 text-xs text-slate-300">${host.database}</td>
+                    <td class="py-3 px-4 text-xs">
+                        <div class="flex flex-wrap gap-1 max-w-xs">
+                            ${host.languages.slice(0, 4).map(l => `<span class="bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800 text-[10px]">${l}</span>`).join('')}
+                            ${host.languages.length > 4 ? `<span class="text-[10px] text-slate-500">+${host.languages.length - 4}</span>` : ''}
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-xs">
+                        ${host.docker ? '<i class="fa-solid fa-check text-emerald-400"></i> Supported' : '<i class="fa-solid fa-xmark text-slate-600"></i> Native only'}
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="openGuideModal('${host.id}')" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-200">
+                            Guide
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openGuideModal(hostId) {
+            const host = HOSTS_DATABASE.find(h => h.id === hostId) || HOSTS_DATABASE[0];
+
+            document.getElementById('modal-host-icon').innerHTML = `<i class="${host.logo}"></i>`;
+            document.getElementById('modal-host-title').innerText = `${host.name} Deployment Guide`;
+            document.getElementById('modal-host-subtitle').innerText = host.guide.title;
+            document.getElementById('modal-external-link').href = host.url;
+
+            const modalBody = document.getElementById('modal-body-content');
+            modalBody.innerHTML = `
+                <div class="space-y-4">
+                    <p class="text-xs text-slate-400">${host.tagline}</p>
+                    <div class="space-y-4">
+                        ${host.guide.steps.map((step, idx) => `
+                            <div class="flex items-start space-x-3">
+                                <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                    ${idx + 1}
+                                </div>
+                                <div class="space-y-2 flex-grow">
+                                    <p class="text-slate-200 text-xs sm:text-sm font-medium">${step.text}</p>
+                                    ${step.code ? `
+                                        <div class="relative group">
+                                            <pre class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-emerald-300 overflow-x-auto"><code>${escapeHtml(step.code)}</code></pre>
+                                            <button onclick="copyToClipboard(\`${escapeJsString(step.code)}\`)" class="absolute top-2 right-2 px-2 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-[10px] text-slate-300">
+                                                <i class="fa-regular fa-copy mr-1"></i> Copy
+                                            </button>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('guide-modal').classList.remove('hidden');
+        }
+
+        function closeGuideModal() {
+            document.getElementById('guide-modal').classList.add('hidden');
+        }
+
+        const QUIZ_STEPS = [
+            {
+                id: 'lang',
+                question: '1. What primary language or stack is your app built with?',
+                options: [
+                    { label: 'Python (Flask, Django, FastAPI)', value: 'Python' },
+                    { label: 'Node.js / JavaScript / React / Next.js', value: 'Node.js' },
+                    { label: 'Go (Golang) or Rust', value: 'Go' },
+                    { label: 'Java / PHP / Ruby / .NET', value: 'Java' },
+                    { label: 'Docker Container / Multi-language', value: 'Docker' },
+                    { label: 'Static HTML/CSS/JS', value: 'Static' }
+                ]
+            },
+            {
+                id: 'nocard',
+                question: '2. Do you require deployment WITHOUT adding a credit/debit card?',
+                options: [
+                    { label: 'Must NOT require a credit card (Strict requirement)', value: 'strict' },
+                    { label: 'Card verification is fine for setup', value: 'fine' }
+                ]
+            },
+            {
+                id: 'db',
+                question: '3. Do you need a bundled free database (Postgres/MySQL)?',
+                options: [
+                    { label: 'Yes, need a free relational DB included', value: 'yes' },
+                    { label: 'No, using external database or static API', value: 'no' }
+                ]
+            },
+            {
+                id: 'coldStart',
+                question: '4. Is sleep / cold start latency acceptable when app is idle?',
+                options: [
+                    { label: 'No! App must stay active 24/7 without delays', value: 'nosleep' },
+                    { label: 'Cold start delays are acceptable for free tier', value: 'ok' }
+                ]
+            }
+        ];
+
+        function initQuizWizard() {
+            currentQuizStep = 0;
+            quizAnswers = {};
+            document.getElementById('quiz-results-container').classList.add('hidden');
+            document.getElementById('quiz-step-container').classList.remove('hidden');
+            renderQuizStep();
+        }
+
+        function renderQuizStep() {
+            const step = QUIZ_STEPS[currentQuizStep];
+            const container = document.getElementById('quiz-step-container');
+
+            const pct = ((currentQuizStep + 1) / QUIZ_STEPS.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-white">${step.question}</h3>
+                    <div class="space-y-2">
+                        ${step.options.map(opt => `
+                            <button onclick="answerQuizStep('${step.id}', '${opt.value}')" class="w-full text-left p-4 rounded-2xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800/60 hover:border-emerald-500 transition flex items-center justify-between group">
+                                <span class="text-sm text-slate-200 font-medium group-hover:text-white">${opt.label}</span>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:text-emerald-400"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function answerQuizStep(key, val) {
+            quizAnswers[key] = val;
+            if (currentQuizStep < QUIZ_STEPS.length - 1) {
+                currentQuizStep++;
+                renderQuizStep();
+            } else {
+                calculateQuizRecommendations();
+            }
+        }
+
+        function calculateQuizRecommendations() {
+            document.getElementById('quiz-step-container').classList.add('hidden');
+            const resultsContainer = document.getElementById('quiz-results-container');
+            resultsContainer.classList.remove('hidden');
+
+            let matches = HOSTS_DATABASE.filter(h => {
+                if (quizAnswers.lang !== 'Docker' && quizAnswers.lang !== 'Static' && !h.languages.includes(quizAnswers.lang)) {
+                    if (!h.docker) return false;
+                }
+                if (quizAnswers.nocard === 'strict' && h.cardRequired) return false;
+                if (quizAnswers.coldStart === 'nosleep' && h.coldStartSec > 0) return false;
+                return true;
+            });
+
+            if (matches.length === 0) {
+                matches = HOSTS_DATABASE.filter(h => !h.cardRequired);
+            }
+
+            const topMatch = matches[0] || HOSTS_DATABASE[0];
+
+            resultsContainer.innerHTML = `
+                <div class="text-center space-y-4 bg-slate-950/80 p-6 sm:p-8 rounded-3xl border border-emerald-500/30">
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                        Top Matched Host Platform
+                    </span>
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-3xl">
+                        <i class="${topMatch.logo}"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-white">${topMatch.name}</h3>
+                    <p class="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">${topMatch.tagline}</p>
+
+                    <div class="flex justify-center gap-2 text-xs py-2">
+                        <span class="bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-slate-300">
+                            <strong>RAM:</strong> ${topMatch.ram}
+                        </span>
+                        <span class="bg-slate-900 px-3 py-1 rounded-lg border border-slate-800 text-slate-300">
+                            <strong>Card Required:</strong> ${topMatch.cardRequired ? 'Yes' : 'No'}
+                        </span>
+                    </div>
+
+                    <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                        <button onclick="openGuideModal('${topMatch.id}')" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition">
+                            Open Setup Guide
+                        </button>
+                        <button onclick="initQuizWizard()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold border border-slate-800 rounded-xl text-xs transition">
+                            Retake Quiz
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Code snippet copied!");
+            } catch (err) {
+                showToast("Failed to copy.");
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xl pointer-events-auto flex items-center space-x-2 transition-all transform duration-200 translate-y-2';
+            toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function escapeJsString(str) {
+            return str.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+        }
+    </script>
+</body>
+</html>
