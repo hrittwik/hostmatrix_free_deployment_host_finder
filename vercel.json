@@ -1,3 +1,11 @@
 {
-    "cleanUrls": true
+    "cleanUrls": true,
+    "redirects": [
+        {
+            "source": "/:path((?!ads\\.txt$).*)",
+            "has": [{ "type": "host", "value": "bunon.xyz" }],
+            "destination": "https://hostmatrix.bunon.xyz/:path",
+            "permanent": true
+        }
+    ]
 }

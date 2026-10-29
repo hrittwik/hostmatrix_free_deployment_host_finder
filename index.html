@@ -3,7 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HostMatrix - Universal Free Hosting Finder</title>
+    <title>HostMatrix - Free Hosting Finder for Python, Node.js, Go, Docker &amp; More</title>
+    <meta name="description" content="Compare free cloud hosting for Python, Node.js, Go, Rust, Java, PHP, Ruby, .NET, Docker and static sites. Filter by no credit card, no cold start, free database, and RAM.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://hostmatrix.bunon.xyz/">
+    <meta name="theme-color" content="#0b0f19">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="HostMatrix">
+    <meta property="og:title" content="HostMatrix - Find Free Cloud Hosting for Any Language">
+    <meta property="og:description" content="Compare free tiers of Render, Vercel, Koyeb, Fly.io, Cloudflare Pages, Netlify and more. Filter by language, credit card requirement, cold starts and free databases.">
+    <meta property="og:url" content="https://hostmatrix.bunon.xyz/">
+    <meta property="og:image" content="https://hostmatrix.bunon.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HostMatrix - Find Free Cloud Hosting for Any Language">
+    <meta name="twitter:description" content="Compare free hosting tiers by language, credit card requirement, cold starts and free databases.">
+    <meta name="twitter:image" content="https://hostmatrix.bunon.xyz/og-image.png">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "HostMatrix",
+        "url": "https://hostmatrix.bunon.xyz/",
+        "description": "Directory for discovering and comparing free cloud hosting platforms for every language and stack."
+    }
+    </script>
+
+    <!-- Google Analytics 4 + Consent Mode v2. Replace G-XXXXXXXXXX with your Measurement ID. -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        // Deny ad/analytics storage by default in the EEA, UK and Switzerland until the
+        // Google CMP (AdSense > Privacy & messaging) records the visitor's choice.
+        gtag('consent', 'default', {
+            ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied',
+            region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'],
+            wait_for_update: 500
+        });
+        gtag('consent', 'default', {
+            ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
+        });
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+
+    <!-- Google AdSense. Replace ca-pub-0000000000000000 with your publisher ID (both lines). -->
+    <meta name="google-adsense-account" content="ca-pub-0000000000000000">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous"></script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -62,6 +115,9 @@
             background: rgba(17, 24, 39, 0.75);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(31, 41, 55, 0.8);
+        }
+        .ad-slot ins.adsbygoogle[data-ad-status="unfilled"] {
+            display: none !important;
         }
     </style>
 </head>
@@ -200,6 +256,39 @@
             <div id="hosts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Host cards injected dynamically -->
             </div>
+
+            <!-- Ad: below host grid -->
+            <div class="ad-slot hidden rounded-2xl border border-slate-800 bg-slate-950/40 p-3" data-ad-key="explore">
+                <span class="block text-[10px] uppercase tracking-wider text-slate-600 mb-1">Advertisement</span>
+                <ins class="adsbygoogle" style="display:block" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+
+            <!-- FAQ (static, crawlable content) -->
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-5">
+                <h2 class="text-2xl font-black text-white">Free Hosting FAQ</h2>
+                <div class="space-y-4 text-sm text-slate-300 leading-relaxed">
+                    <details class="group border-b border-slate-800 pb-4" open>
+                        <summary class="cursor-pointer font-bold text-slate-100">Which free hosting platforms don't require a credit card?</summary>
+                        <p class="mt-2">Render, PythonAnywhere, Vercel, Koyeb, Cloudflare Pages, Netlify, GitHub Pages, InfinityFree, Shuttle.rs and Hugging Face Spaces let you deploy on their free tier without adding a card. Use the <strong>No Credit Card Required</strong> filter above to see the current list.</p>
+                    </details>
+                    <details class="group border-b border-slate-800 pb-4">
+                        <summary class="cursor-pointer font-bold text-slate-100">What is a cold start on free hosting?</summary>
+                        <p class="mt-2">Many free tiers put your app to sleep after a period of inactivity. The next request has to wake the app up, which can take anywhere from a few seconds to about a minute. Platforms marked <strong>No Cold Start</strong> keep your app running or serve static files from a CDN, so there is no wake-up delay.</p>
+                    </details>
+                    <details class="group border-b border-slate-800 pb-4">
+                        <summary class="cursor-pointer font-bold text-slate-100">Where can I host a Python app (Flask, Django, FastAPI) for free?</summary>
+                        <p class="mt-2">PythonAnywhere is built specifically for Python and stays active without a card. Render, Koyeb and Hugging Face Spaces also run Python web apps, and Vercel supports Python serverless functions. Select the <strong>Python</strong> category to compare them side by side.</p>
+                    </details>
+                    <details class="group border-b border-slate-800 pb-4">
+                        <summary class="cursor-pointer font-bold text-slate-100">Can I deploy a Docker container for free?</summary>
+                        <p class="mt-2">Yes. Render, Koyeb, Fly.io, Hugging Face Spaces and Oracle Cloud's Always Free tier can all run Docker images, which means any language that runs in a container can be hosted. Pick the <strong>Docker / Any</strong> category to filter for them.</p>
+                    </details>
+                    <details class="group">
+                        <summary class="cursor-pointer font-bold text-slate-100">Are these free tier limits up to date?</summary>
+                        <p class="mt-2">Providers change their free plans often. HostMatrix summarises each platform's published limits, but always confirm current RAM, sleep policies and database terms on the provider's own pricing page before relying on them.</p>
+                    </details>
+                </div>
+            </div>
         </section>
 
         <!-- VIEW 2: COMPARISON MATRIX -->
@@ -227,6 +316,12 @@
                         <!-- Matrix rows injected dynamically -->
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Ad: below comparison matrix -->
+            <div class="ad-slot hidden rounded-2xl border border-slate-800 bg-slate-950/40 p-3" data-ad-key="matrix">
+                <span class="block text-[10px] uppercase tracking-wider text-slate-600 mb-1">Advertisement</span>
+                <ins class="adsbygoogle" style="display:block" data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>
         </section>
 
@@ -257,9 +352,36 @@
                     <!-- Results injected dynamically -->
                 </div>
             </div>
+
+            <!-- Ad: below wizard -->
+            <div class="ad-slot hidden max-w-3xl mx-auto rounded-2xl border border-slate-800 bg-slate-950/40 p-3" data-ad-key="quiz">
+                <span class="block text-[10px] uppercase tracking-wider text-slate-600 mb-1">Advertisement</span>
+                <ins class="adsbygoogle" style="display:block" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
         </section>
 
     </main>
+
+    <footer class="border-t border-slate-800 bg-slate-950/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid gap-6 md:grid-cols-3 text-xs text-slate-400">
+            <div class="space-y-2">
+                <span class="text-base font-extrabold text-slate-200">HostMatrix</span>
+                <p>An independent directory comparing free cloud hosting tiers for every language and stack. Not affiliated with any listed provider.</p>
+            </div>
+            <div class="space-y-2">
+                <span class="font-bold text-slate-300 uppercase tracking-wider">Disclosure</span>
+                <p>HostMatrix is free to use and supported by ads. Some outbound links may be affiliate links, marked <em>sponsored</em>; we may earn a commission at no extra cost to you. Listings are never ranked by payment.</p>
+            </div>
+            <div class="space-y-2">
+                <span class="font-bold text-slate-300 uppercase tracking-wider">Site</span>
+                <ul class="space-y-1">
+                    <li><a href="/privacy" class="hover:text-emerald-400">Privacy Policy</a></li>
+                    <li><a href="/sitemap.xml" class="hover:text-emerald-400">Sitemap</a></li>
+                </ul>
+                <p class="pt-2 text-slate-600">&copy; <span id="footer-year">2026</span> HostMatrix</p>
+            </div>
+        </div>
+    </footer>
 
     <div id="guide-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
         <div class="glass-panel border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
@@ -297,6 +419,17 @@
     </div>
 
     <script>
+        // Monetisation config. Fill adSlots with the slot IDs of display ad units created
+        // in AdSense > Ads > By ad unit. Slots left empty stay hidden (Auto ads still work).
+        const SITE_CONFIG = {
+            adsenseClient: "ca-pub-0000000000000000",
+            adSlots: {
+                explore: "",
+                matrix: "",
+                quiz: ""
+            }
+        };
+
         const CATEGORIES = [
             { id: "all", label: "All Stacks", icon: "fa-solid fa-layer-group" },
             { id: "Python", label: "Python", icon: "fa-brands fa-python" },
@@ -658,7 +791,47 @@
             applyFilters();
             renderMatrixTable(HOSTS_DATABASE);
             initQuizWizard();
+            document.getElementById('footer-year').innerText = new Date().getFullYear();
+            initAds('explore');
         };
+
+        function trackEvent(name, params) {
+            if (typeof gtag === 'function') gtag('event', name, params || {});
+        }
+
+        // Ad units inside hidden views have zero width, so each one is pushed the first time its view is shown.
+        function initAds(viewId) {
+            if (SITE_CONFIG.adsenseClient.endsWith('0000000000000000')) return;
+            document.querySelectorAll(`#view-${viewId} .ad-slot`).forEach(wrapper => {
+                const slotId = SITE_CONFIG.adSlots[wrapper.dataset.adKey];
+                const ins = wrapper.querySelector('ins.adsbygoogle');
+                if (!slotId || ins.dataset.adSlot) return;
+                ins.dataset.adClient = SITE_CONFIG.adsenseClient;
+                ins.dataset.adSlot = slotId;
+                wrapper.classList.remove('hidden');
+                try {
+                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (err) {
+                    wrapper.classList.add('hidden');
+                }
+            });
+        }
+
+        // Prefer a provider's affiliate/referral link when one is configured.
+        function hostLink(host) {
+            return host.affiliateUrl || host.url;
+        }
+
+        function hostLinkRel(host) {
+            return host.affiliateUrl ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
+        }
+
+        let searchTrackTimer;
+        function trackSearch(term) {
+            clearTimeout(searchTrackTimer);
+            if (term.length < 2) return;
+            searchTrackTimer = setTimeout(() => trackEvent('search', { search_term: term }), 1200);
+        }
 
         function switchView(viewId) {
             document.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
@@ -674,6 +847,8 @@
                 activeNav.classList.remove('text-slate-400');
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            initAds(viewId);
+            trackEvent('view_change', { view_name: viewId });
         }
 
         function toggleMobileMenu() {
@@ -753,6 +928,7 @@
 
             document.getElementById('results-count').innerText = filtered.length;
             renderCardsGrid(filtered);
+            trackSearch(searchQuery);
         }
 
         function renderCardsGrid(hosts) {
@@ -840,7 +1016,7 @@
                         <button onclick="openGuideModal('${host.id}')" class="flex-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700 transition flex items-center justify-center">
                             <i class="fa-solid fa-book-open mr-1.5 text-emerald-400"></i> Setup Guide
                         </button>
-                        <a href="${host.url}" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center">
+                        <a href="${hostLink(host)}" target="_blank" rel="${hostLinkRel(host)}" onclick="trackEvent('host_click', { host_id: '${host.id}', location: 'card' })" class="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center">
                             Visit <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i>
                         </a>
                     </div>
@@ -886,7 +1062,11 @@
             document.getElementById('modal-host-icon').innerHTML = `<i class="${host.logo}"></i>`;
             document.getElementById('modal-host-title').innerText = `${host.name} Deployment Guide`;
             document.getElementById('modal-host-subtitle').innerText = host.guide.title;
-            document.getElementById('modal-external-link').href = host.url;
+            const externalLink = document.getElementById('modal-external-link');
+            externalLink.href = hostLink(host);
+            externalLink.rel = hostLinkRel(host);
+            externalLink.onclick = () => trackEvent('host_click', { host_id: host.id, location: 'guide' });
+            trackEvent('open_guide', { host_id: host.id });
 
             const modalBody = document.getElementById('modal-body-content');
             modalBody.innerHTML = `
@@ -1020,6 +1200,7 @@
             }
 
             const topMatch = matches[0] || HOSTS_DATABASE[0];
+            trackEvent('quiz_complete', { host_id: topMatch.id, ...quizAnswers });
 
             resultsContainer.innerHTML = `
                 <div class="text-center space-y-4 bg-slate-950/80 p-6 sm:p-8 rounded-3xl border border-emerald-500/30">
